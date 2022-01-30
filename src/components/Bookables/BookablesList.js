@@ -13,17 +13,23 @@ export default function BookablesList ({state, dispatch}) {
   const nextButtonRef = useRef();
 
   useEffect(() => {
-    dispatch({type: "FETCH_BOOKABLES_REQUEST"});
+    (async () => {
+      dispatch({type: "FETCH_BOOKABLES_REQUEST"});
 
-    getData("http://localhost:3001/bookables")
-      .then(bookables => dispatch({
-        type: "FETCH_BOOKABLES_SUCCESS",
-        payload: bookables
-      }))
-      .catch(error => dispatch({
-        type: "FETCH_BOOKABLES_ERROR",
-        payload: error
-      }));
+      try {
+        let bookables = await getData("http://localhost:3001/bookables");
+        dispatch({
+          type: "FETCH_BOOKABLES_SUCCESS",
+          payload: bookables
+        });
+      }
+      catch(error) {
+        dispatch({
+          type: "FETCH_BOOKABLES_ERROR",
+          payload: error
+        });
+      }
+    })();
   }, [dispatch]);
 
   function changeGroup (e) {
